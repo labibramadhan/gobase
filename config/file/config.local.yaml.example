@@ -1,0 +1,37 @@
+server:
+  rest:
+    listenAddress: "0.0.0.0"
+    port: 6080
+    defaultTimeout: 10000
+    readTimeout: 10000
+    writeTimeout: 10000
+    APIKey: "123456"
+
+rdbms:
+  app:
+    driver: postgres
+    dsn: "postgres://apple:password@localhost:5432/transportq?sslmode=disable"
+    maxOpenConns: 10
+    maxIdleConns: 10
+    connMaxLifetime: 3000
+    retry: 3
+  outbox:
+    driver: postgres
+    dsn: "postgres://apple:password@localhost:5432/transportq?sslmode=disable"
+    maxOpenConns: 10
+    maxIdleConns: 10
+    connMaxLifetime: 3000
+    retry: 3
+
+dbmigrate:
+    app:
+      driver: postgres 
+      dsn: "postgres://apple:password@localhost:5432/transportq?sslmode=disable"
+    outbox: 
+      driver: postgres 
+      dsn: "postgres://apple:password@localhost:5432/transportq?sslmode=disable"
+
+tracer:
+  enabled: false
+  jaeger:
+    collectorUrl: "http://localhost:14268/api/traces"

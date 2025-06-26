@@ -1,0 +1,31 @@
+type ProductAttribute {
+  id: UUID!
+  name: String
+}
+
+type Product {
+  id: UUID!
+  name: String
+  description: String
+  createdAt: Time
+  updatedAt: Time
+  variants: [ProductVariant] @goField(forceResolver: true)
+}
+
+type ProductVariant {
+  id: UUID!
+  productId: UUID
+  sku: String
+  price: Float
+  discountedPrice: Float
+  createdAt: Time
+  updatedAt: Time
+  attributes: [ProductAttributeValue] @goField(forceResolver: true)
+}
+
+type ProductAttributeValue {
+  id: UUID!
+  value: String
+  attributeId: UUID
+  attribute: ProductAttribute @goField(forceResolver: true)
+}

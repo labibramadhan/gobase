@@ -1,0 +1,23 @@
+input ProductQop {
+  pagination: Pagination
+  sorts: [Sort]
+  filters: ProductQopFilter
+}
+
+input ProductQopFilter {
+  name: String
+  createdAt: Time
+  updatedAt: Time
+  createdAtGte: Time
+  createdAtLte: Time
+}
+
+type ProductList {
+  items: [Product]
+  pagination: PaginationResult
+}
+
+type Query {
+  product(id: UUID!): Product!
+  products(qop: ProductQop): ProductList!
+}

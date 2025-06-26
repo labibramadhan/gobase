@@ -1,0 +1,18 @@
+input Pagination   {
+  page: Int
+  pageSize: Int
+  withCount: Boolean
+}
+
+input Sort {
+  field: String
+  direction: String
+}
+
+type PaginationResult {
+  page: Int
+  pageSize: Int
+  totalPages: Int
+  totalRows: Int
+  hasNext: Boolean
+}

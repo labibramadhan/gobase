@@ -1,0 +1,26 @@
+input CreateProductAttributeValueInput {
+  id: UUID!
+  value: String!
+}
+
+input CreateProductVariantInput {
+  sku: String!
+  price: Float!
+  discountedPrice: Float
+  attributes: [CreateProductAttributeValueInput]
+}
+
+input CreateProductInput {
+  name: String!
+  description: String
+  variants: [CreateProductVariantInput!]
+}
+
+input CreateProductAttributeInput {
+  name: String!
+}
+
+type Mutation {
+  createProduct(input: CreateProductInput!): Product!
+  createProductAttribute(input: CreateProductAttributeInput!): ProductAttribute!
+}
