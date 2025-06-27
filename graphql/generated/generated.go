@@ -7,6 +7,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	productdto "gobase/internal/domain/product/dto"
+	"gobase/internal/pkg/service/crud"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -18,9 +20,6 @@ import (
 	"github.com/google/uuid"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
-
-	productdto "gobase/internal/domain/product/dto"
-	"gobase/internal/pkg/service/crud"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -727,7 +726,7 @@ func (ec *executionContext) field_Mutation_createProductAttribute_argsInput(
 ) (productdto.CreateProductAttributeInput, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNCreateProductAttributeInput2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductAttributeInput(ctx, tmp)
+		return ec.unmarshalNCreateProductAttributeInput2gobaseᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductAttributeInput(ctx, tmp)
 	}
 
 	var zeroVal productdto.CreateProductAttributeInput
@@ -750,7 +749,7 @@ func (ec *executionContext) field_Mutation_createProduct_argsInput(
 ) (productdto.CreateProductInput, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNCreateProductInput2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductInput(ctx, tmp)
+		return ec.unmarshalNCreateProductInput2gobaseᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductInput(ctx, tmp)
 	}
 
 	var zeroVal productdto.CreateProductInput
@@ -819,7 +818,7 @@ func (ec *executionContext) field_Query_products_argsQop(
 ) (*productdto.ProductQop, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("qop"))
 	if tmp, ok := rawArgs["qop"]; ok {
-		return ec.unmarshalOProductQop2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductQop(ctx, tmp)
+		return ec.unmarshalOProductQop2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductQop(ctx, tmp)
 	}
 
 	var zeroVal *productdto.ProductQop
@@ -954,7 +953,7 @@ func (ec *executionContext) _Mutation_createProduct(ctx context.Context, field g
 	}
 	res := resTmp.(*productdto.Product)
 	fc.Result = res
-	return ec.marshalNProduct2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx, field.Selections, res)
+	return ec.marshalNProduct2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createProduct(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1023,7 +1022,7 @@ func (ec *executionContext) _Mutation_createProductAttribute(ctx context.Context
 	}
 	res := resTmp.(*productdto.ProductAttribute)
 	fc.Result = res
-	return ec.marshalNProductAttribute2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttribute(ctx, field.Selections, res)
+	return ec.marshalNProductAttribute2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttribute(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createProductAttribute(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1494,7 +1493,7 @@ func (ec *executionContext) _Product_variants(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*productdto.ProductVariant)
 	fc.Result = res
-	return ec.marshalOProductVariant2ᚕᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductVariant(ctx, field.Selections, res)
+	return ec.marshalOProductVariant2ᚕᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductVariant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Product_variants(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1764,7 +1763,7 @@ func (ec *executionContext) _ProductAttributeValue_attribute(ctx context.Context
 	}
 	res := resTmp.(*productdto.ProductAttribute)
 	fc.Result = res
-	return ec.marshalOProductAttribute2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttribute(ctx, field.Selections, res)
+	return ec.marshalOProductAttribute2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttribute(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProductAttributeValue_attribute(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1811,7 +1810,7 @@ func (ec *executionContext) _ProductList_items(ctx context.Context, field graphq
 	}
 	res := resTmp.([]*productdto.Product)
 	fc.Result = res
-	return ec.marshalOProduct2ᚕᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx, field.Selections, res)
+	return ec.marshalOProduct2ᚕᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProductList_items(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1866,7 +1865,7 @@ func (ec *executionContext) _ProductList_pagination(ctx context.Context, field g
 	}
 	res := resTmp.(crud.PaginationResult)
 	fc.Result = res
-	return ec.marshalOPaginationResult2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋpkgᚋserviceᚋcrudᚐPaginationResult(ctx, field.Selections, res)
+	return ec.marshalOPaginationResult2gobaseᚋinternalᚋpkgᚋserviceᚋcrudᚐPaginationResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProductList_pagination(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2209,7 +2208,7 @@ func (ec *executionContext) _ProductVariant_attributes(ctx context.Context, fiel
 	}
 	res := resTmp.([]*productdto.ProductAttributeValue)
 	fc.Result = res
-	return ec.marshalOProductAttributeValue2ᚕᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttributeValue(ctx, field.Selections, res)
+	return ec.marshalOProductAttributeValue2ᚕᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttributeValue(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ProductVariant_attributes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2263,7 +2262,7 @@ func (ec *executionContext) _Query_product(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*productdto.Product)
 	fc.Result = res
-	return ec.marshalNProduct2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx, field.Selections, res)
+	return ec.marshalNProduct2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_product(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2332,7 +2331,7 @@ func (ec *executionContext) _Query_products(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*crud.PageResult[*productdto.Product])
 	fc.Result = res
-	return ec.marshalNProductList2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋpkgᚋserviceᚋcrudᚐPageResult(ctx, field.Selections, res)
+	return ec.marshalNProductList2ᚖgobaseᚋinternalᚋpkgᚋserviceᚋcrudᚐPageResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_products(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4627,7 +4626,7 @@ func (ec *executionContext) unmarshalInputCreateProductInput(ctx context.Context
 			it.Description = data
 		case "variants":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("variants"))
-			data, err := ec.unmarshalOCreateProductVariantInput2ᚕk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductVariantInputᚄ(ctx, v)
+			data, err := ec.unmarshalOCreateProductVariantInput2ᚕgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductVariantInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4675,7 +4674,7 @@ func (ec *executionContext) unmarshalInputCreateProductVariantInput(ctx context.
 			it.DiscountedPrice = data
 		case "attributes":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("attributes"))
-			data, err := ec.unmarshalOCreateProductAttributeValueInput2ᚕk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductAttributeValueInput(ctx, v)
+			data, err := ec.unmarshalOCreateProductAttributeValueInput2ᚕgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductAttributeValueInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4743,21 +4742,21 @@ func (ec *executionContext) unmarshalInputProductQop(ctx context.Context, obj an
 		switch k {
 		case "pagination":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
-			data, err := ec.unmarshalOPagination2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋpkgᚋserviceᚋcrudᚐPagination(ctx, v)
+			data, err := ec.unmarshalOPagination2ᚖgobaseᚋinternalᚋpkgᚋserviceᚋcrudᚐPagination(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Pagination = data
 		case "sorts":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sorts"))
-			data, err := ec.unmarshalOSort2ᚕk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋpkgᚋserviceᚋcrudᚐSort(ctx, v)
+			data, err := ec.unmarshalOSort2ᚕgobaseᚋinternalᚋpkgᚋserviceᚋcrudᚐSort(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Sorts = data
 		case "filters":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filters"))
-			data, err := ec.unmarshalOProductQopFilter2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductQopFilter(ctx, v)
+			data, err := ec.unmarshalOProductQopFilter2gobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductQopFilter(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5787,17 +5786,17 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNCreateProductAttributeInput2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductAttributeInput(ctx context.Context, v any) (productdto.CreateProductAttributeInput, error) {
+func (ec *executionContext) unmarshalNCreateProductAttributeInput2gobaseᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductAttributeInput(ctx context.Context, v any) (productdto.CreateProductAttributeInput, error) {
 	res, err := ec.unmarshalInputCreateProductAttributeInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNCreateProductInput2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductInput(ctx context.Context, v any) (productdto.CreateProductInput, error) {
+func (ec *executionContext) unmarshalNCreateProductInput2gobaseᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductInput(ctx context.Context, v any) (productdto.CreateProductInput, error) {
 	res, err := ec.unmarshalInputCreateProductInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNCreateProductVariantInput2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductVariantInput(ctx context.Context, v any) (productdto.CreateProductVariantInput, error) {
+func (ec *executionContext) unmarshalNCreateProductVariantInput2gobaseᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductVariantInput(ctx context.Context, v any) (productdto.CreateProductVariantInput, error) {
 	res, err := ec.unmarshalInputCreateProductVariantInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -5834,11 +5833,11 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 	return graphql.WrapContextMarshaler(ctx, res)
 }
 
-func (ec *executionContext) marshalNProduct2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx context.Context, sel ast.SelectionSet, v productdto.Product) graphql.Marshaler {
+func (ec *executionContext) marshalNProduct2gobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx context.Context, sel ast.SelectionSet, v productdto.Product) graphql.Marshaler {
 	return ec._Product(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNProduct2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx context.Context, sel ast.SelectionSet, v *productdto.Product) graphql.Marshaler {
+func (ec *executionContext) marshalNProduct2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx context.Context, sel ast.SelectionSet, v *productdto.Product) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -5848,11 +5847,11 @@ func (ec *executionContext) marshalNProduct2ᚖk3martᚗtechᚋmasterdataᚋmain
 	return ec._Product(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNProductAttribute2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttribute(ctx context.Context, sel ast.SelectionSet, v productdto.ProductAttribute) graphql.Marshaler {
+func (ec *executionContext) marshalNProductAttribute2gobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttribute(ctx context.Context, sel ast.SelectionSet, v productdto.ProductAttribute) graphql.Marshaler {
 	return ec._ProductAttribute(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNProductAttribute2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttribute(ctx context.Context, sel ast.SelectionSet, v *productdto.ProductAttribute) graphql.Marshaler {
+func (ec *executionContext) marshalNProductAttribute2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttribute(ctx context.Context, sel ast.SelectionSet, v *productdto.ProductAttribute) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -5862,11 +5861,11 @@ func (ec *executionContext) marshalNProductAttribute2ᚖk3martᚗtechᚋmasterda
 	return ec._ProductAttribute(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNProductList2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋpkgᚋserviceᚋcrudᚐPageResult(ctx context.Context, sel ast.SelectionSet, v crud.PageResult[*productdto.Product]) graphql.Marshaler {
+func (ec *executionContext) marshalNProductList2gobaseᚋinternalᚋpkgᚋserviceᚋcrudᚐPageResult(ctx context.Context, sel ast.SelectionSet, v crud.PageResult[*productdto.Product]) graphql.Marshaler {
 	return ec._ProductList(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNProductList2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋpkgᚋserviceᚋcrudᚐPageResult(ctx context.Context, sel ast.SelectionSet, v *crud.PageResult[*productdto.Product]) graphql.Marshaler {
+func (ec *executionContext) marshalNProductList2ᚖgobaseᚋinternalᚋpkgᚋserviceᚋcrudᚐPageResult(ctx context.Context, sel ast.SelectionSet, v *crud.PageResult[*productdto.Product]) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -6347,12 +6346,12 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) unmarshalOCreateProductAttributeValueInput2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductAttributeValueInput(ctx context.Context, v any) (productdto.CreateProductAttributeValueInput, error) {
+func (ec *executionContext) unmarshalOCreateProductAttributeValueInput2gobaseᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductAttributeValueInput(ctx context.Context, v any) (productdto.CreateProductAttributeValueInput, error) {
 	res, err := ec.unmarshalInputCreateProductAttributeValueInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOCreateProductAttributeValueInput2ᚕk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductAttributeValueInput(ctx context.Context, v any) ([]productdto.CreateProductAttributeValueInput, error) {
+func (ec *executionContext) unmarshalOCreateProductAttributeValueInput2ᚕgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductAttributeValueInput(ctx context.Context, v any) ([]productdto.CreateProductAttributeValueInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -6362,7 +6361,7 @@ func (ec *executionContext) unmarshalOCreateProductAttributeValueInput2ᚕk3mart
 	res := make([]productdto.CreateProductAttributeValueInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOCreateProductAttributeValueInput2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductAttributeValueInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOCreateProductAttributeValueInput2gobaseᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductAttributeValueInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -6370,7 +6369,7 @@ func (ec *executionContext) unmarshalOCreateProductAttributeValueInput2ᚕk3mart
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOCreateProductVariantInput2ᚕk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductVariantInputᚄ(ctx context.Context, v any) ([]productdto.CreateProductVariantInput, error) {
+func (ec *executionContext) unmarshalOCreateProductVariantInput2ᚕgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductVariantInputᚄ(ctx context.Context, v any) ([]productdto.CreateProductVariantInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -6380,7 +6379,7 @@ func (ec *executionContext) unmarshalOCreateProductVariantInput2ᚕk3martᚗtech
 	res := make([]productdto.CreateProductVariantInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNCreateProductVariantInput2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductVariantInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNCreateProductVariantInput2gobaseᚋinternalᚋdomainᚋproductᚋdtoᚐCreateProductVariantInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -6423,7 +6422,7 @@ func (ec *executionContext) marshalOInt2int64(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalOPagination2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋpkgᚋserviceᚋcrudᚐPagination(ctx context.Context, v any) (*crud.Pagination, error) {
+func (ec *executionContext) unmarshalOPagination2ᚖgobaseᚋinternalᚋpkgᚋserviceᚋcrudᚐPagination(ctx context.Context, v any) (*crud.Pagination, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -6431,11 +6430,11 @@ func (ec *executionContext) unmarshalOPagination2ᚖk3martᚗtechᚋmasterdata�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOPaginationResult2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋpkgᚋserviceᚋcrudᚐPaginationResult(ctx context.Context, sel ast.SelectionSet, v crud.PaginationResult) graphql.Marshaler {
+func (ec *executionContext) marshalOPaginationResult2gobaseᚋinternalᚋpkgᚋserviceᚋcrudᚐPaginationResult(ctx context.Context, sel ast.SelectionSet, v crud.PaginationResult) graphql.Marshaler {
 	return ec._PaginationResult(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOProduct2ᚕᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx context.Context, sel ast.SelectionSet, v []*productdto.Product) graphql.Marshaler {
+func (ec *executionContext) marshalOProduct2ᚕᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx context.Context, sel ast.SelectionSet, v []*productdto.Product) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -6462,7 +6461,7 @@ func (ec *executionContext) marshalOProduct2ᚕᚖk3martᚗtechᚋmasterdataᚋm
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOProduct2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx, sel, v[i])
+			ret[i] = ec.marshalOProduct2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -6476,21 +6475,21 @@ func (ec *executionContext) marshalOProduct2ᚕᚖk3martᚗtechᚋmasterdataᚋm
 	return ret
 }
 
-func (ec *executionContext) marshalOProduct2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx context.Context, sel ast.SelectionSet, v *productdto.Product) graphql.Marshaler {
+func (ec *executionContext) marshalOProduct2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProduct(ctx context.Context, sel ast.SelectionSet, v *productdto.Product) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Product(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOProductAttribute2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttribute(ctx context.Context, sel ast.SelectionSet, v *productdto.ProductAttribute) graphql.Marshaler {
+func (ec *executionContext) marshalOProductAttribute2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttribute(ctx context.Context, sel ast.SelectionSet, v *productdto.ProductAttribute) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._ProductAttribute(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOProductAttributeValue2ᚕᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttributeValue(ctx context.Context, sel ast.SelectionSet, v []*productdto.ProductAttributeValue) graphql.Marshaler {
+func (ec *executionContext) marshalOProductAttributeValue2ᚕᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttributeValue(ctx context.Context, sel ast.SelectionSet, v []*productdto.ProductAttributeValue) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -6517,7 +6516,7 @@ func (ec *executionContext) marshalOProductAttributeValue2ᚕᚖk3martᚗtechᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOProductAttributeValue2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttributeValue(ctx, sel, v[i])
+			ret[i] = ec.marshalOProductAttributeValue2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttributeValue(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -6531,14 +6530,14 @@ func (ec *executionContext) marshalOProductAttributeValue2ᚕᚖk3martᚗtechᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalOProductAttributeValue2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttributeValue(ctx context.Context, sel ast.SelectionSet, v *productdto.ProductAttributeValue) graphql.Marshaler {
+func (ec *executionContext) marshalOProductAttributeValue2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductAttributeValue(ctx context.Context, sel ast.SelectionSet, v *productdto.ProductAttributeValue) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._ProductAttributeValue(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOProductQop2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductQop(ctx context.Context, v any) (*productdto.ProductQop, error) {
+func (ec *executionContext) unmarshalOProductQop2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductQop(ctx context.Context, v any) (*productdto.ProductQop, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -6546,12 +6545,12 @@ func (ec *executionContext) unmarshalOProductQop2ᚖk3martᚗtechᚋmasterdata�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOProductQopFilter2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductQopFilter(ctx context.Context, v any) (productdto.ProductQopFilter, error) {
+func (ec *executionContext) unmarshalOProductQopFilter2gobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductQopFilter(ctx context.Context, v any) (productdto.ProductQopFilter, error) {
 	res, err := ec.unmarshalInputProductQopFilter(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOProductVariant2ᚕᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductVariant(ctx context.Context, sel ast.SelectionSet, v []*productdto.ProductVariant) graphql.Marshaler {
+func (ec *executionContext) marshalOProductVariant2ᚕᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductVariant(ctx context.Context, sel ast.SelectionSet, v []*productdto.ProductVariant) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -6578,7 +6577,7 @@ func (ec *executionContext) marshalOProductVariant2ᚕᚖk3martᚗtechᚋmasterd
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOProductVariant2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductVariant(ctx, sel, v[i])
+			ret[i] = ec.marshalOProductVariant2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductVariant(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -6592,19 +6591,19 @@ func (ec *executionContext) marshalOProductVariant2ᚕᚖk3martᚗtechᚋmasterd
 	return ret
 }
 
-func (ec *executionContext) marshalOProductVariant2ᚖk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋdomainᚋproductᚋdtoᚐProductVariant(ctx context.Context, sel ast.SelectionSet, v *productdto.ProductVariant) graphql.Marshaler {
+func (ec *executionContext) marshalOProductVariant2ᚖgobaseᚋinternalᚋdomainᚋproductᚋdtoᚐProductVariant(ctx context.Context, sel ast.SelectionSet, v *productdto.ProductVariant) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._ProductVariant(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOSort2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋpkgᚋserviceᚋcrudᚐSort(ctx context.Context, v any) (crud.Sort, error) {
+func (ec *executionContext) unmarshalOSort2gobaseᚋinternalᚋpkgᚋserviceᚋcrudᚐSort(ctx context.Context, v any) (crud.Sort, error) {
 	res, err := ec.unmarshalInputSort(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOSort2ᚕk3martᚗtechᚋmasterdataᚋmainᚋinternalᚋpkgᚋserviceᚋcrudᚐSort(ctx context.Context, v any) ([]crud.Sort, error) {
+func (ec *executionContext) unmarshalOSort2ᚕgobaseᚋinternalᚋpkgᚋserviceᚋcrudᚐSort(ctx context.Context, v any) ([]crud.Sort, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -6614,7 +6613,7 @@ func (ec *executionContext) unmarshalOSort2ᚕk3martᚗtechᚋmasterdataᚋmain�
 	res := make([]crud.Sort, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOSort2k3martᚗtechᚋmasterdataᚋmainᚋinternalᚋpkgᚋserviceᚋcrudᚐSort(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOSort2gobaseᚋinternalᚋpkgᚋserviceᚋcrudᚐSort(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}

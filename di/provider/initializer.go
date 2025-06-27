@@ -1,32 +1,18 @@
 package provider
 
 import (
-	env "clodeo.tech/public/go-universe/pkg/env"
-	"clodeo.tech/public/go-universe/pkg/tracer"
 	"github.com/rs/zerolog/log"
 
 	"gobase/config"
 	"gobase/di/registry"
 	iconfig "gobase/internal/config"
+	"gobase/internal/pkg/service/otelsvc"
 )
 
-func InitializeTracer(cfg *config.MainConfig) {
-	if cfg.Tracer.Enabled {
-		tracerConfig := &tracer.TracerConfig{
-			Provider:    cfg.Tracer.Provider,
-			Environment: env.GetEnvironmentName(),
-			ServiceName: cfg.ServiceName,
-		}
-
-		if cfg.Tracer.Provider == "jaeger" {
-			tracerConfig.JaegerCollectorURL = cfg.Tracer.Jaeger.CollectorUrl
-		}
-
-		err := tracer.Init(tracerConfig)
-
-		if err != nil {
-			log.Fatal().Err(err).Msg("failed to initialize tracer")
-		}
+func InitializeOtel(otelsvc otelsvc.Service) {
+	err := otelsvc.Init()
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to initialize otel")
 	}
 }
 
@@ -39,9 +25,10 @@ func InitializeStructConverter() {
 
 func Initializer(
 	cfg *config.MainConfig,
+	otel otelsvc.Service,
 ) registry.InitializerFunc {
 	return func() {
-		InitializeTracer(cfg)
 		InitializeStructConverter()
+		InitializeOtel(otel)
 	}
 }

@@ -2,7 +2,7 @@ package transportgraphql
 
 import (
 	"net/http"
-	"os"
+	"strconv"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
@@ -11,6 +11,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/vektah/gqlparser/v2/ast"
 
+	"gobase/config"
 	"gobase/di/registry"
 	"gobase/graphql"
 	graphqlgen "gobase/graphql/generated"
@@ -20,19 +21,36 @@ import (
 type TransportModule struct {
 	graphQLResolver      registry.GraphQLResolver
 	middlewareDataloader middlewaregraphql.Dataloader
+	middlewareOtel       middlewaregraphql.Otel
+	config               *config.MainConfig
+}
+
+type TransportOpts struct {
+	GraphQLResolver      registry.GraphQLResolver
+	MiddlewareDataloader middlewaregraphql.Dataloader
+	MiddlewareOtel       middlewaregraphql.Otel
+	Config               *config.MainConfig
 }
 
 const defaultPort = "8181"
 
-func NewTransport(graphQLResolver registry.GraphQLResolver, middlewareDataloader middlewaregraphql.Dataloader) registry.IApplicationTransportGraphQL {
-	return &TransportModule{
-		graphQLResolver:      graphQLResolver,
-		middlewareDataloader: middlewareDataloader,
+func NewTransport(opts TransportOpts) (registry.IApplicationTransportGraphQL, registry.CleanupFunc) {
+	transportModule := &TransportModule{
+		graphQLResolver:      opts.GraphQLResolver,
+		middlewareDataloader: opts.MiddlewareDataloader,
+		middlewareOtel:       opts.MiddlewareOtel,
+		config:               opts.Config,
 	}
+
+	return transportModule, transportModule.Cleanup
 }
 
-func (m *TransportModule) Run() (registry.CleanupFunc, error) {
-	port := os.Getenv("PORT")
+func (m *TransportModule) Cleanup() {
+
+}
+
+func (m *TransportModule) Run() error {
+	port := strconv.Itoa(m.config.Server.GraphQL.Port)
 	if port == "" {
 		port = defaultPort
 	}
@@ -44,6 +62,8 @@ func (m *TransportModule) Run() (registry.CleanupFunc, error) {
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
 	srv.AddTransport(transport.POST{})
+
+	m.middlewareOtel(srv)
 
 	srv.SetQueryCache(lru.New[*ast.QueryDocument](1000))
 
@@ -57,5 +77,5 @@ func (m *TransportModule) Run() (registry.CleanupFunc, error) {
 
 	err := http.ListenAndServe(":"+port, nil)
 
-	return nil, err
+	return err
 }

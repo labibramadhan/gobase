@@ -50,12 +50,7 @@ func runAllServices(cmd *cobra.Command, args []string) error {
 		log.Fatal().Err(err).Msg("Failed to initialize application")
 	}
 
-	app.Initialize()
-
-	app.RunTransportGraphQL()
-	app.RunTransportREST()
-
-	<-app.ListenTerminateSignal(cleanup)
+	app.Run(cleanup)
 
 	return nil
 }

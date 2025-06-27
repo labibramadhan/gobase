@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"context"
 	"os"
 	"os/signal"
 	"syscall"
@@ -32,8 +33,7 @@ func (a *Application) RunTransportREST() {
 	// Run REST server in a goroutine to prevent blocking
 	go func() {
 		log.Info().Msg("starting REST server")
-		cleanup, err := a.TransportREST.Run()
-		<-a.ListenTerminateSignal(cleanup)
+		err := a.TransportREST.Run()
 		if err != nil {
 			log.Fatal().Err(err).Msg("Failed to run REST application")
 		}
@@ -44,29 +44,28 @@ func (a *Application) RunTransportGraphQL() {
 	// Run REST server in a goroutine to prevent blocking
 	go func() {
 		log.Info().Msg("starting GraphQL server")
-		cleanup, err := a.TransportGraphQL.Run()
-		<-a.ListenTerminateSignal(cleanup)
+		err := a.TransportGraphQL.Run()
 		if err != nil {
 			log.Fatal().Err(err).Msg("Failed to run GraphQL application")
 		}
 	}()
 }
 
-func (a *Application) ListenTerminateSignal(cleanup CleanupFunc) chan os.Signal {
-	if a.terminationSignal == nil {
-		a.terminationSignal = make(chan os.Signal, 1)
-		signal.Notify(a.terminationSignal, syscall.SIGINT, syscall.SIGTERM)
+func (a *Application) Run(cleanup CleanupFunc) {
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 
-		// Handle termination in a goroutine
-		go func() {
-			<-a.terminationSignal
-			log.Info().Msg("Received termination signal")
+	a.Initialize()
 
-			cleanup()
+	a.RunTransportREST()
+	a.RunTransportGraphQL()
 
-			log.Info().Msg("Application shutting down gracefully")
-			os.Exit(0)
-		}()
-	}
-	return a.terminationSignal
+	<-ctx.Done()
+
+	defer func() {
+		log.Info().Msg("Calling cleanup function...")
+		cleanup()
+	}()
+
+	log.Info().Msg("Application shutting down gracefully...")
 }

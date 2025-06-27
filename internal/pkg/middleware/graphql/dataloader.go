@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/99designs/gqlgen/graphql/handler"
+
 	"gobase/di/registry"
 )
 
@@ -11,13 +13,13 @@ type contextKey string
 
 const loadersKey = contextKey("dataloaders")
 
-type Dataloader = func(next http.Handler) http.Handler
+type Dataloader = func(srv *handler.Server) http.Handler
 
 func NewDataloader(loader registry.GraphQLDataloader) Dataloader {
-	return func(next http.Handler) http.Handler {
+	return func(srv *handler.Server) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := context.WithValue(r.Context(), loadersKey, loader)
-			next.ServeHTTP(w, r.WithContext(ctx))
+			srv.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
 }

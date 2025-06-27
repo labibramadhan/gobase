@@ -6,12 +6,11 @@ package graphql
 
 import (
 	"context"
-
-	"github.com/google/uuid"
-
 	graphqlgen "gobase/graphql/generated"
 	productdto "gobase/internal/domain/product/dto"
 	"gobase/internal/pkg/service/crud"
+
+	"github.com/google/uuid"
 )
 
 // Product is the resolver for the product field.

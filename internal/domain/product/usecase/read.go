@@ -8,9 +8,15 @@ import (
 	productdto "gobase/internal/domain/product/dto"
 	productmapper "gobase/internal/domain/product/mapper"
 	"gobase/internal/pkg/service/crud"
+	"gobase/internal/pkg/service/otelsvc"
 )
 
 func (m *UseCaseModule) FindById(ctx context.Context, id uuid.UUID) (*productdto.Product, error) {
+	ctx, span := otelsvc.StartSpan(ctx, "productusecase.FindById", map[string]string{
+		"id": id.String(),
+	})
+	defer span.End()
+
 	productEntity, err := m.repository.Product().FindByID(ctx, id.String())
 	if err != nil {
 		return nil, err
@@ -20,16 +26,14 @@ func (m *UseCaseModule) FindById(ctx context.Context, id uuid.UUID) (*productdto
 }
 
 func (m *UseCaseModule) FindAll(ctx context.Context, qop *productdto.ProductQop) (*crud.PageResult[*productdto.Product], error) {
-	qop.WithAllowedSorts([]string{"id", "name", "created_at", "updated_at"})
+	ctx, span := otelsvc.StartSpan(ctx, "productusecase.FindAll")
+	defer span.End()
 
-	options := qop.ToQueryOptions()
+	var options *crud.QueryOptions
 
-	// Set default pagination if not provided
-	if options.Pagination == nil {
-		options.Pagination = &crud.Pagination{
-			Page:     1,
-			PageSize: 10,
-		}
+	if qop != nil {
+		qop.WithAllowedSorts([]string{"id", "name", "created_at", "updated_at"})
+		options = qop.ToQueryOptions()
 	}
 
 	// Get product entities from repository

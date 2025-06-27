@@ -14,6 +14,7 @@ import (
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/extra/bundebug"
+	"github.com/uptrace/bun/extra/bunotel"
 
 	"gobase/config"
 	iconfig "gobase/internal/config"
@@ -57,6 +58,10 @@ func ProvideInfrastructureBun(cfg *config.MainConfig) *bun.DB {
 		db = bun.NewDB(sqldb, pgdialect.New())
 	default:
 		log.Fatal().Msgf("failed to initiate RDBMS : %s", cfg.Rdbms.App.Driver)
+	}
+
+	if cfg.Otel.Enabled {
+		db.AddQueryHook(bunotel.NewQueryHook(bunotel.WithDBName("db")))
 	}
 
 	// enable sql logging

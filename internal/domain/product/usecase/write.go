@@ -9,9 +9,13 @@ import (
 	masterdataentity "gobase/internal/db/masterdata/entity"
 	productdto "gobase/internal/domain/product/dto"
 	productmapper "gobase/internal/domain/product/mapper"
+	"gobase/internal/pkg/service/otelsvc"
 )
 
 func (m *UseCaseModule) Create(ctx context.Context, productInput productdto.CreateProductInput) (*productdto.Product, error) {
+	ctx, span := otelsvc.StartSpan(ctx, "productusecase.Create")
+	defer span.End()
+
 	var err error
 
 	err = m.sp.TransformAndValidateByTag(ctx, &productInput)
@@ -25,7 +29,7 @@ func (m *UseCaseModule) Create(ctx context.Context, productInput productdto.Crea
 
 	// The transaction will handle the creation of the product and all its related entities.
 	err = m.bun.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
-		txRepo := m.repository.WithTx(tx)
+		txRepo := m.repository.WithTx(ctx, tx)
 
 		createdProduct, err = txRepo.Product().Create(ctx, productEntity)
 		if err != nil {
@@ -64,6 +68,9 @@ func (m *UseCaseModule) Create(ctx context.Context, productInput productdto.Crea
 }
 
 func (m *UseCaseModule) CreateAttribute(ctx context.Context, input productdto.CreateProductAttributeInput) (*productdto.ProductAttribute, error) {
+	ctx, span := otelsvc.StartSpan(ctx, "productusecase.CreateAttribute")
+	defer span.End()
+
 	var err error
 
 	err = m.sp.TransformAndValidateByTag(ctx, &input)

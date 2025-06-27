@@ -20,18 +20,31 @@ import (
 )
 
 type TransportModule struct {
+	srv        *fiber.App
 	cfg        *config.MainConfig
 	restRouter *registry.RESTRouter
 }
 
-func NewTransport(cfg *config.MainConfig, restRouter *registry.RESTRouter) registry.IApplicationTransportREST {
-	return &TransportModule{
+func NewTransport(cfg *config.MainConfig, restRouter *registry.RESTRouter) (registry.IApplicationTransportREST, registry.CleanupFunc) {
+	transportModule := &TransportModule{
 		cfg:        cfg,
 		restRouter: restRouter,
 	}
+
+	return transportModule, transportModule.Cleanup
 }
 
-func (m *TransportModule) Run() (registry.CleanupFunc, error) {
+func (m *TransportModule) Cleanup() {
+	if m.srv == nil {
+		return
+	}
+	err := m.srv.Shutdown()
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to shutdown fiber server")
+	}
+}
+
+func (m *TransportModule) Run() error {
 	restConfig := m.cfg.Server.Rest
 	readTimeoutSecond := restConfig.ReadTimeoutSecond
 	writeTimeoutSecond := restConfig.WriteTimeoutSecond
@@ -40,7 +53,7 @@ func (m *TransportModule) Run() (registry.CleanupFunc, error) {
 	jsoniterExtra.SetNamingStrategy(jsoniterExtra.LowerCaseWithUnderscores)
 	jsonHandler := jsoniter.ConfigCompatibleWithStandardLibrary
 
-	srv := fiber.New(fiber.Config{
+	m.srv = fiber.New(fiber.Config{
 		ErrorHandler: middlewarerest.GetErrorMiddleware(),
 		BodyLimit:    bodyLimitMB * 1024 * 1024,
 		ReadTimeout:  time.Duration(readTimeoutSecond) * time.Second,
@@ -50,29 +63,22 @@ func (m *TransportModule) Run() (registry.CleanupFunc, error) {
 	})
 
 	// Liveness check api
-	srv.Get("/health", func(fc *fiber.Ctx) error {
+	m.srv.Get("/health", func(fc *fiber.Ctx) error {
 		return fc.JSON("OK")
 	})
 
-	srv.Use(recover.New(recover.Config{
+	m.srv.Use(recover.New(recover.Config{
 		EnableStackTrace: true,
 	}))
-	srv.Use(otelfiber.Middleware())
-	srv.Use(logger.New())
-	srv.Use(cors.New())
-	srv.Use(helmet.New())
+	m.srv.Use(otelfiber.Middleware())
+	m.srv.Use(logger.New())
+	m.srv.Use(cors.New())
+	m.srv.Use(helmet.New())
 
-	cleanup := func() {
-		err := srv.Shutdown()
-		if err != nil {
-			log.Fatal().Err(err).Msg("failed to shutdown fiber server")
-		}
-	}
-
-	err := srv.Listen(m.cfg.Server.Rest.ListenAddress + ":" + strconv.Itoa(m.cfg.Server.Rest.Port))
+	err := m.srv.Listen(m.cfg.Server.Rest.ListenAddress + ":" + strconv.Itoa(m.cfg.Server.Rest.Port))
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return cleanup, err
+	return err
 }

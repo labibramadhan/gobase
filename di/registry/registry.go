@@ -14,10 +14,10 @@ type AgentListen func(opts agent.Options) error
 type ReadConfig func(cfg interface{}, path string, module string) error
 
 type IApplicationTransportREST interface {
-	Run() (CleanupFunc, error)
+	Run() error
 }
 type IApplicationTransportGraphQL interface {
-	Run() (CleanupFunc, error)
+	Run() error
 }
 
 type ApplicationContext struct {

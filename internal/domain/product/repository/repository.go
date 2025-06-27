@@ -1,6 +1,8 @@
 package productrepository
 
 import (
+	"context"
+
 	"github.com/uptrace/bun"
 
 	masterdataentity "gobase/internal/db/masterdata/entity"
@@ -10,7 +12,7 @@ import (
 // Repository defines the data access layer for the entire Product aggregate.
 type Repository interface {
 	// WithTx returns a new repository instance that uses the provided transaction.
-	WithTx(tx bun.Tx) Repository
+	WithTx(ctx context.Context, tx bun.Tx) Repository
 
 	// Product returns a repository scoped to the Product entity.
 	Product() buncrud.BaseRepository[masterdataentity.Product]
@@ -50,12 +52,12 @@ func NewRepository(opts RepositoryOpts) Repository {
 }
 
 // WithTx returns a new repository instance that uses the provided transaction.
-func (r *RepositoryModule) WithTx(tx bun.Tx) Repository {
+func (r *RepositoryModule) WithTx(ctx context.Context, tx bun.Tx) Repository {
 	return &RepositoryModule{
-		productsRepo:        r.productsRepo.WithTx(tx),
-		variantsRepo:        r.variantsRepo.WithTx(tx),
-		attributesRepo:      r.attributesRepo.WithTx(tx),
-		attributeValuesRepo: r.attributeValuesRepo.WithTx(tx),
+		productsRepo:        r.productsRepo.WithTx(ctx, tx),
+		variantsRepo:        r.variantsRepo.WithTx(ctx, tx),
+		attributesRepo:      r.attributesRepo.WithTx(ctx, tx),
+		attributeValuesRepo: r.attributeValuesRepo.WithTx(ctx, tx),
 		db:                  tx,
 	}
 }

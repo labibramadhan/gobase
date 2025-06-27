@@ -6,7 +6,6 @@ package graphql
 
 import (
 	"context"
-
 	graphqlgen "gobase/graphql/generated"
 	productdto "gobase/internal/domain/product/dto"
 )

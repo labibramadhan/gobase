@@ -25,7 +25,7 @@ func InitializeApplication(appContext registry.ApplicationContext) (*registry.Ap
 	readConfig := appContext.ReadConfig
 	mainConfig := provider.ProvideConfig(appContext, agentListen, readConfig)
 	restRouter := &registry.RESTRouter{}
-	iApplicationTransportREST := transportrest.NewTransport(mainConfig, restRouter)
+	iApplicationTransportREST, cleanup := transportrest.NewTransport(mainConfig, restRouter)
 	db := provider.ProvideInfrastructureBun(mainConfig)
 	repositoryOpts := productrepository.RepositoryOpts{
 		Bun: db,
@@ -51,9 +51,20 @@ func InitializeApplication(appContext registry.ApplicationContext) (*registry.Ap
 		Product: dataloader,
 	}
 	v := middlewaregraphql.NewDataloader(graphQLDataloader)
-	iApplicationTransportGraphQL := transportgraphql.NewTransport(graphQLResolver, v)
-	v2 := provider.Initializer(mainConfig)
-	application := registry.NewApplication(iApplicationTransportREST, iApplicationTransportGraphQL, v2)
+	v2 := middlewaregraphql.NewOtel()
+	transportOpts := transportgraphql.TransportOpts{
+		GraphQLResolver:      graphQLResolver,
+		MiddlewareDataloader: v,
+		MiddlewareOtel:       v2,
+		Config:               mainConfig,
+	}
+	iApplicationTransportGraphQL, cleanup2 := transportgraphql.NewTransport(transportOpts)
+	service, cleanup3 := provider.ProvideServiceOtelService(mainConfig)
+	v3 := provider.Initializer(mainConfig, service)
+	application := registry.NewApplication(iApplicationTransportREST, iApplicationTransportGraphQL, v3)
 	return application, func() {
+		cleanup3()
+		cleanup2()
+		cleanup()
 	}, nil
 }

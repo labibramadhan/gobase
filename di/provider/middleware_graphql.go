@@ -8,4 +8,5 @@ import (
 
 var MiddlewareGraphQLSet = wire.NewSet(
 	middlewaregraphql.NewDataloader,
+	middlewaregraphql.NewOtel,
 )

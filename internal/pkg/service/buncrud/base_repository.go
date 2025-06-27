@@ -10,12 +10,13 @@ import (
 	"github.com/uptrace/bun"
 
 	"gobase/internal/pkg/service/crud"
+	"gobase/internal/pkg/service/otelsvc"
 )
 
 // BaseRepository defines the common repository interface
 type BaseRepository[T any] interface {
 	// WithTx returns a new repository instance that uses the provided transaction.
-	WithTx(tx bun.Tx) BaseRepository[T]
+	WithTx(ctx context.Context, tx bun.Tx) BaseRepository[T]
 
 	FindAll(ctx context.Context, options *crud.QueryOptions) (*crud.PageResult[T], error)
 	FindIn(ctx context.Context, column string, values []any, options *crud.QueryOptions) ([]*T, error)
@@ -26,7 +27,7 @@ type BaseRepository[T any] interface {
 	Delete(ctx context.Context, id string) error
 	HardDelete(ctx context.Context, id string) error
 	Exists(ctx context.Context, id string) (bool, error)
-	QueryBuilder(options *crud.QueryOptions) *bun.SelectQuery
+	QueryBuilder(ctx context.Context, options *crud.QueryOptions) *bun.SelectQuery
 }
 
 // BaseRepositoryImpl implements BaseRepository
@@ -40,14 +41,20 @@ func NewBaseRepository[T any](db bun.IDB) BaseRepository[T] {
 }
 
 // WithTx returns a new repository instance that uses the provided transaction.
-func (r *BaseRepositoryImpl[T]) WithTx(tx bun.Tx) BaseRepository[T] {
+func (r *BaseRepositoryImpl[T]) WithTx(ctx context.Context, tx bun.Tx) BaseRepository[T] {
+	_, span := otelsvc.StartSpan(ctx, "buncrud.WithTx")
+	defer span.End()
+
 	return &BaseRepositoryImpl[T]{
 		db: tx,
 	}
 }
 
 // QueryBuilder creates a new query builder with applied options
-func (r *BaseRepositoryImpl[T]) QueryBuilder(options *crud.QueryOptions) *bun.SelectQuery {
+func (r *BaseRepositoryImpl[T]) QueryBuilder(ctx context.Context, options *crud.QueryOptions) *bun.SelectQuery {
+	_, span := otelsvc.StartSpan(ctx, "buncrud.QueryBuilder")
+	defer span.End()
+
 	var entity T
 	query := r.db.NewSelect().Model(&entity)
 
@@ -83,18 +90,30 @@ func (r *BaseRepositoryImpl[T]) QueryBuilder(options *crud.QueryOptions) *bun.Se
 
 // FindAll finds all entities matching the given options, with pagination and without count.
 func (r *BaseRepositoryImpl[T]) FindAll(ctx context.Context, options *crud.QueryOptions) (*crud.PageResult[T], error) {
+	ctx, span := otelsvc.StartSpan(ctx, "buncrud.FindAll")
+	defer span.End()
+
 	var entities []T
 	var count int
 	var err error
 
 	// Build the base query
-	query := r.QueryBuilder(options)
+	query := r.QueryBuilder(ctx, options)
 
 	// Get the total count of items if requested
 	if options != nil && options.Pagination != nil && options.Pagination.WithCount {
 		count, err = query.Count(ctx)
 		if err != nil {
 			return nil, err
+		}
+	}
+
+	if options == nil {
+		options = &crud.QueryOptions{
+			Pagination: &crud.Pagination{
+				Page:     1,
+				PageSize: 10,
+			},
 		}
 	}
 
@@ -126,6 +145,9 @@ func (r *BaseRepositoryImpl[T]) FindAll(ctx context.Context, options *crud.Query
 
 // FindIn finds multiple entities where the given column is in the given values.
 func (r *BaseRepositoryImpl[T]) FindIn(ctx context.Context, column string, values []any, options *crud.QueryOptions) ([]*T, error) {
+	ctx, span := otelsvc.StartSpan(ctx, "buncrud.FindIn")
+	defer span.End()
+
 	var entities []T
 
 	if len(values) == 0 {
@@ -133,7 +155,7 @@ func (r *BaseRepositoryImpl[T]) FindIn(ctx context.Context, column string, value
 			nil
 	}
 
-	query := r.QueryBuilder(options).Where(fmt.Sprintf("%s IN (?)", column), bun.In(values))
+	query := r.QueryBuilder(ctx, options).Where(fmt.Sprintf("%s IN (?)", column), bun.In(values))
 
 	if err := query.Scan(ctx, &entities); err != nil {
 		return nil, err
@@ -150,9 +172,12 @@ func (r *BaseRepositoryImpl[T]) FindIn(ctx context.Context, column string, value
 // FindByID finds an entity by ID with optional relations.
 // It returns ErrNotFound if the entity is not found.
 func (r *BaseRepositoryImpl[T]) FindByID(ctx context.Context, id string) (*T, error) {
+	ctx, span := otelsvc.StartSpan(ctx, "buncrud.FindByID")
+	defer span.End()
+
 	var entity T
 
-	query := r.QueryBuilder(nil).Where("id = ?", id)
+	query := r.QueryBuilder(ctx, nil).Where("id = ?", id)
 
 	if err := query.Scan(ctx, &entity); err != nil {
 		if err == sql.ErrNoRows {
@@ -166,6 +191,9 @@ func (r *BaseRepositoryImpl[T]) FindByID(ctx context.Context, id string) (*T, er
 
 // Create creates a new entity and returns it.
 func (r *BaseRepositoryImpl[T]) Create(ctx context.Context, entity *T) (*T, error) {
+	ctx, span := otelsvc.StartSpan(ctx, "buncrud.Create")
+	defer span.End()
+
 	_, err := r.db.NewInsert().Model(entity).Returning("*").Exec(ctx)
 	if err != nil {
 		return nil, err
@@ -175,6 +203,9 @@ func (r *BaseRepositoryImpl[T]) Create(ctx context.Context, entity *T) (*T, erro
 
 // CreateBulk creates multiple entities in a single query.
 func (r *BaseRepositoryImpl[T]) CreateBulk(ctx context.Context, entities []*T) ([]*T, error) {
+	ctx, span := otelsvc.StartSpan(ctx, "buncrud.CreateBulk")
+	defer span.End()
+
 	if len(entities) == 0 {
 		return entities, nil
 	}
@@ -188,6 +219,9 @@ func (r *BaseRepositoryImpl[T]) CreateBulk(ctx context.Context, entities []*T) (
 // Update updates an existing entity and returns it.
 // It returns ErrNotFound if the entity does not exist.
 func (r *BaseRepositoryImpl[T]) Update(ctx context.Context, entity *T) (*T, error) {
+	ctx, span := otelsvc.StartSpan(ctx, "buncrud.Update")
+	defer span.End()
+
 	res, err := r.db.NewUpdate().Model(entity).WherePK().Returning("*").Exec(ctx)
 	if err != nil {
 		return nil, err
@@ -208,6 +242,9 @@ func (r *BaseRepositoryImpl[T]) Update(ctx context.Context, entity *T) (*T, erro
 // Delete performs a soft delete on an entity.
 // It returns ErrNotFound if the entity does not exist.
 func (r *BaseRepositoryImpl[T]) Delete(ctx context.Context, id string) error {
+	ctx, span := otelsvc.StartSpan(ctx, "buncrud.Delete")
+	defer span.End()
+
 	var entity T
 	res, err := r.db.NewUpdate().Model(&entity).
 		Set("deleted_at = NOW()").
@@ -233,6 +270,9 @@ func (r *BaseRepositoryImpl[T]) Delete(ctx context.Context, id string) error {
 // HardDelete deletes an entity by ID.
 // It returns ErrNotFound if the entity does not exist.
 func (r *BaseRepositoryImpl[T]) HardDelete(ctx context.Context, id string) error {
+	ctx, span := otelsvc.StartSpan(ctx, "buncrud.HardDelete")
+	defer span.End()
+
 	var entity T
 	res, err := r.db.NewDelete().Model(&entity).Where("id = ?", id).Exec(ctx)
 	if err != nil {
@@ -253,6 +293,9 @@ func (r *BaseRepositoryImpl[T]) HardDelete(ctx context.Context, id string) error
 
 // Exists checks if an entity with the given ID exists
 func (r *BaseRepositoryImpl[T]) Exists(ctx context.Context, id string) (bool, error) {
+	ctx, span := otelsvc.StartSpan(ctx, "buncrud.Exists")
+	defer span.End()
+
 	var entity T
 	exists, err := r.db.NewSelect().Model(&entity).
 		Where("id = ?", id).

@@ -2,7 +2,7 @@ wire:
 	@wire gen ./di/container
 
 gql:
-	@wire gen ./graphql
+	@go run github.com/99designs/gqlgen generate
 
 lint:
 	@golangci-lint run

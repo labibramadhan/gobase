@@ -17,5 +17,7 @@ var TransportGraphQLDependencySet = wire.NewSet(
 
 var TransportGraphQLSet = wire.NewSet(
 	TransportGraphQLDependencySet,
+
+	wire.Struct(new(transportgraphql.TransportOpts), "*"),
 	transportgraphql.NewTransport,
 )

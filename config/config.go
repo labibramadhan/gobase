@@ -6,12 +6,13 @@ type MainConfig struct {
 	Server      ServerConfig      `fig:"server"`
 	DBMigration DBMigrationConfig `fig:"dbmigrate"`
 	Rdbms       RdbmsConfig       `fig:"rdbms"`
-	Tracer      TracerConfig      `fig:"tracer"`
+	Otel        OtelConfig        `fig:"otel"`
 }
 
 type (
 	GeneralConfig struct {
-		TZ string `json:"tz"`
+		TZ          string `json:"tz"`
+		ServiceName string `json:"serviceName"`
 	}
 
 	ServerConfig struct {
@@ -21,6 +22,10 @@ type (
 		}
 
 		Rest ServerConfigRest `fig:"rest"`
+
+		GraphQL struct {
+			Port int `fig:"port"`
+		} `fig:"graphql"`
 	}
 
 	ServerConfigRest struct {
@@ -55,13 +60,14 @@ type (
 		Retry           int    `fig:"retry"`
 	}
 
-	TracerConfig struct {
-		Enabled  bool         `fig:"enabled"`
-		Provider string       `fig:"provider"`
-		Jaeger   JaegerConfig `fig:"jaeger"`
-	}
-
-	JaegerConfig struct {
-		CollectorUrl string `fig:"collectorUrl"`
+	OtelConfig struct {
+		Enabled            bool    `fig:"enabled"`
+		TracerProvider     string  `fig:"tracerProvider"`
+		MeterProvider      string  `fig:"meterProvider"`
+		SampleRate         float64 `fig:"sampleRate"`
+		OtlpEndpoint       string  `fig:"otlpEndpoint"`
+		ZipkinEndpoint     string  `fig:"zipkinEndpoint"`
+		OtlpMetricEndpoint string  `fig:"otlpMetricEndpoint"`
+		MetricIntervalMs   int     `fig:"metricIntervalMs"`
 	}
 )
