@@ -13,7 +13,7 @@ import (
 )
 
 func (m *UseCaseModule) Create(ctx context.Context, productInput productdto.CreateProductInput) (*productdto.Product, error) {
-	ctx, span := otelsvc.StartSpan(ctx, "productusecase.Create")
+	ctx, span := otelsvc.StartSpan(ctx, "ProductUseCase/Create")
 	defer span.End()
 
 	var err error
@@ -32,6 +32,10 @@ func (m *UseCaseModule) Create(ctx context.Context, productInput productdto.Crea
 		txRepo := m.repository.WithTx(ctx, tx)
 
 		createdProduct, err = txRepo.Product().Create(ctx, productEntity)
+		if err != nil {
+			return err
+		}
+		err = m.productEventPublisher.PublishProductCreated(ctx, tx, createdProduct)
 		if err != nil {
 			return err
 		}
@@ -68,7 +72,7 @@ func (m *UseCaseModule) Create(ctx context.Context, productInput productdto.Crea
 }
 
 func (m *UseCaseModule) CreateAttribute(ctx context.Context, input productdto.CreateProductAttributeInput) (*productdto.ProductAttribute, error) {
-	ctx, span := otelsvc.StartSpan(ctx, "productusecase.CreateAttribute")
+	ctx, span := otelsvc.StartSpan(ctx, "ProductUseCase/CreateAttribute")
 	defer span.End()
 
 	var err error

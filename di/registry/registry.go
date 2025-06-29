@@ -1,6 +1,8 @@
 package registry
 
 import (
+	"context"
+
 	"github.com/google/gops/agent"
 
 	productloader "gobase/internal/domain/product/dataloader"
@@ -14,10 +16,13 @@ type AgentListen func(opts agent.Options) error
 type ReadConfig func(cfg interface{}, path string, module string) error
 
 type IApplicationTransportREST interface {
-	Run() error
+	Run(ctx context.Context) error
 }
 type IApplicationTransportGraphQL interface {
-	Run() error
+	Run(ctx context.Context) error
+}
+type IApplicationTransportWatermill interface {
+	Run(ctx context.Context) error
 }
 
 type ApplicationContext struct {

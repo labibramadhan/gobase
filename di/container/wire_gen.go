@@ -10,12 +10,15 @@ import (
 	"gobase/di/provider"
 	"gobase/di/registry"
 	"gobase/internal/domain/product/dataloader"
+	"gobase/internal/domain/product/event/publisher"
+	"gobase/internal/domain/product/event/subscriber"
 	"gobase/internal/domain/product/repository"
 	"gobase/internal/domain/product/resolver"
 	"gobase/internal/domain/product/usecase"
 	"gobase/internal/pkg/middleware/graphql"
 	"gobase/transport/graphql"
 	"gobase/transport/rest"
+	"gobase/transport/watermill"
 )
 
 // Injectors from application.go:
@@ -33,10 +36,31 @@ func InitializeApplication(appContext registry.ApplicationContext) (*registry.Ap
 	repository := productrepository.NewRepository(repositoryOpts)
 	localizer := provider.ProvideInfrastructureLocalizer()
 	structProcessorService := provider.ProvideServiceStructProcessorService(localizer)
+	loggerAdapter := provider.ProvideWatermillLogger()
+	publisher, err := provider.ProvideWatermillPublisher(loggerAdapter)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	subscriber, err := provider.ProvideWatermillSubscriber(publisher, loggerAdapter)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	service, err := provider.ProvideWatermillService(mainConfig, loggerAdapter, db, publisher, subscriber)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	eventOpts := producteventpublisher.EventOpts{
+		Watermillsvc: service,
+	}
+	event := producteventpublisher.NewEvent(eventOpts)
 	useCaseOpts := productusecase.UseCaseOpts{
-		Bun:        db,
-		Repository: repository,
-		SP:         structProcessorService,
+		Bun:                   db,
+		Repository:            repository,
+		SP:                    structProcessorService,
+		ProductEventPublisher: event,
 	}
 	useCase := productusecase.NewUseCase(useCaseOpts)
 	resolverOptions := productresolver.ResolverOptions{
@@ -59,10 +83,21 @@ func InitializeApplication(appContext registry.ApplicationContext) (*registry.Ap
 		Config:               mainConfig,
 	}
 	iApplicationTransportGraphQL, cleanup2 := transportgraphql.NewTransport(transportOpts)
-	service, cleanup3 := provider.ProvideServiceOtelService(mainConfig)
-	v3 := provider.Initializer(mainConfig, service)
-	application := registry.NewApplication(iApplicationTransportREST, iApplicationTransportGraphQL, v3)
+	producteventsubscriberEventOpts := producteventsubscriber.EventOpts{
+		Watermillsvc:   service,
+		ProductUseCase: useCase,
+	}
+	producteventsubscriberEvent := producteventsubscriber.NewEvent(producteventsubscriberEventOpts)
+	transportwatermillTransportOpts := transportwatermill.TransportOpts{
+		WatermillService:       service,
+		ProductEventSubscriber: producteventsubscriberEvent,
+	}
+	iApplicationTransportWatermill, cleanup3 := transportwatermill.NewTransport(transportwatermillTransportOpts)
+	otelsvcService, cleanup4 := provider.ProvideServiceOtelService(mainConfig)
+	v3 := provider.Initializer(mainConfig, otelsvcService)
+	application := registry.NewApplication(iApplicationTransportREST, iApplicationTransportGraphQL, iApplicationTransportWatermill, v3)
 	return application, func() {
+		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()

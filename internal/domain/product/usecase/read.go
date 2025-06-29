@@ -12,9 +12,7 @@ import (
 )
 
 func (m *UseCaseModule) FindById(ctx context.Context, id uuid.UUID) (*productdto.Product, error) {
-	ctx, span := otelsvc.StartSpan(ctx, "productusecase.FindById", map[string]string{
-		"id": id.String(),
-	})
+	ctx, span := otelsvc.StartSpan(ctx, "ProductUseCase/FindById")
 	defer span.End()
 
 	productEntity, err := m.repository.Product().FindByID(ctx, id.String())
@@ -26,7 +24,7 @@ func (m *UseCaseModule) FindById(ctx context.Context, id uuid.UUID) (*productdto
 }
 
 func (m *UseCaseModule) FindAll(ctx context.Context, qop *productdto.ProductQop) (*crud.PageResult[*productdto.Product], error) {
-	ctx, span := otelsvc.StartSpan(ctx, "productusecase.FindAll")
+	ctx, span := otelsvc.StartSpan(ctx, "ProductUseCase/FindAll")
 	defer span.End()
 
 	var options *crud.QueryOptions

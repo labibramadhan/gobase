@@ -1,6 +1,7 @@
 package transportrest
 
 import (
+	"context"
 	"strconv"
 	"time"
 
@@ -44,7 +45,7 @@ func (m *TransportModule) Cleanup() {
 	}
 }
 
-func (m *TransportModule) Run() error {
+func (m *TransportModule) Run(ctx context.Context) error {
 	restConfig := m.cfg.Server.Rest
 	readTimeoutSecond := restConfig.ReadTimeoutSecond
 	writeTimeoutSecond := restConfig.WriteTimeoutSecond

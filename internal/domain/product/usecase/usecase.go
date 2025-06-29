@@ -7,6 +7,7 @@ import (
 	"github.com/uptrace/bun"
 
 	productdto "gobase/internal/domain/product/dto"
+	producteventpublisher "gobase/internal/domain/product/event/publisher"
 	productrepository "gobase/internal/domain/product/repository"
 	"gobase/internal/pkg/service/crud"
 	structprocessor "gobase/internal/pkg/service/structprocessor"
@@ -20,21 +21,24 @@ type UseCase interface {
 }
 
 type UseCaseModule struct {
-	bun        *bun.DB
-	repository productrepository.Repository
-	sp         structprocessor.StructProcessorService
+	bun                   *bun.DB
+	repository            productrepository.Repository
+	sp                    structprocessor.StructProcessorService
+	productEventPublisher producteventpublisher.Event
 }
 
 type UseCaseOpts struct {
-	Bun        *bun.DB
-	Repository productrepository.Repository
-	SP         structprocessor.StructProcessorService
+	Bun                   *bun.DB
+	Repository            productrepository.Repository
+	SP                    structprocessor.StructProcessorService
+	ProductEventPublisher producteventpublisher.Event
 }
 
 func NewUseCase(opts UseCaseOpts) UseCase {
 	return &UseCaseModule{
-		bun:        opts.Bun,
-		repository: opts.Repository,
-		sp:         opts.SP,
+		bun:                   opts.Bun,
+		repository:            opts.Repository,
+		sp:                    opts.SP,
+		productEventPublisher: opts.ProductEventPublisher,
 	}
 }

@@ -1,6 +1,7 @@
 package transportgraphql
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 
@@ -49,7 +50,7 @@ func (m *TransportModule) Cleanup() {
 
 }
 
-func (m *TransportModule) Run() error {
+func (m *TransportModule) Run(ctx context.Context) error {
 	port := strconv.Itoa(m.config.Server.GraphQL.Port)
 	if port == "" {
 		port = defaultPort

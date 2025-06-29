@@ -1,6 +1,9 @@
 package provider
 
 import (
+	"os"
+
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
 	"gobase/config"
@@ -23,6 +26,12 @@ func InitializeStructConverter() {
 	}
 }
 
+func InitializeLogger() {
+	zerolog.ErrorStackMarshaler = zerolog.ErrorStackMarshaler
+	zerolog.CallerMarshalFunc = zerolog.CallerMarshalFunc
+	log.Logger = zerolog.New(os.Stdout).With().Caller().Stack().Timestamp().Logger().Level(zerolog.DebugLevel)
+}
+
 func Initializer(
 	cfg *config.MainConfig,
 	otel otelsvc.Service,
@@ -30,5 +39,6 @@ func Initializer(
 	return func() {
 		InitializeStructConverter()
 		InitializeOtel(otel)
+		InitializeLogger()
 	}
 }

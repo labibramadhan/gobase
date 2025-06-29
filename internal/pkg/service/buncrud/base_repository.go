@@ -42,7 +42,7 @@ func NewBaseRepository[T any](db bun.IDB) BaseRepository[T] {
 
 // WithTx returns a new repository instance that uses the provided transaction.
 func (r *BaseRepositoryImpl[T]) WithTx(ctx context.Context, tx bun.Tx) BaseRepository[T] {
-	_, span := otelsvc.StartSpan(ctx, "buncrud.WithTx")
+	_, span := otelsvc.StartSpan(ctx, "Buncrud/WithTx")
 	defer span.End()
 
 	return &BaseRepositoryImpl[T]{
@@ -52,7 +52,7 @@ func (r *BaseRepositoryImpl[T]) WithTx(ctx context.Context, tx bun.Tx) BaseRepos
 
 // QueryBuilder creates a new query builder with applied options
 func (r *BaseRepositoryImpl[T]) QueryBuilder(ctx context.Context, options *crud.QueryOptions) *bun.SelectQuery {
-	_, span := otelsvc.StartSpan(ctx, "buncrud.QueryBuilder")
+	_, span := otelsvc.StartSpan(ctx, "Buncrud/QueryBuilder")
 	defer span.End()
 
 	var entity T
@@ -90,7 +90,11 @@ func (r *BaseRepositoryImpl[T]) QueryBuilder(ctx context.Context, options *crud.
 
 // FindAll finds all entities matching the given options, with pagination and without count.
 func (r *BaseRepositoryImpl[T]) FindAll(ctx context.Context, options *crud.QueryOptions) (*crud.PageResult[T], error) {
-	ctx, span := otelsvc.StartSpan(ctx, "buncrud.FindAll")
+	ctx, span := otelsvc.StartSpanWithAttributes(ctx, "Buncrud/FindAll", map[string]any{
+		"pagination": options.Pagination,
+		"filters":    options.Filters,
+		"sorts":      options.Sorts,
+	})
 	defer span.End()
 
 	var entities []T
@@ -145,7 +149,10 @@ func (r *BaseRepositoryImpl[T]) FindAll(ctx context.Context, options *crud.Query
 
 // FindIn finds multiple entities where the given column is in the given values.
 func (r *BaseRepositoryImpl[T]) FindIn(ctx context.Context, column string, values []any, options *crud.QueryOptions) ([]*T, error) {
-	ctx, span := otelsvc.StartSpan(ctx, "buncrud.FindIn")
+	ctx, span := otelsvc.StartSpanWithAttributes(ctx, "Buncrud/FindIn", map[string]any{
+		"column": column,
+		"values": values,
+	})
 	defer span.End()
 
 	var entities []T
@@ -172,7 +179,9 @@ func (r *BaseRepositoryImpl[T]) FindIn(ctx context.Context, column string, value
 // FindByID finds an entity by ID with optional relations.
 // It returns ErrNotFound if the entity is not found.
 func (r *BaseRepositoryImpl[T]) FindByID(ctx context.Context, id string) (*T, error) {
-	ctx, span := otelsvc.StartSpan(ctx, "buncrud.FindByID")
+	ctx, span := otelsvc.StartSpanWithAttributes(ctx, "Buncrud/FindByID", map[string]any{
+		"id": id,
+	})
 	defer span.End()
 
 	var entity T
@@ -191,7 +200,7 @@ func (r *BaseRepositoryImpl[T]) FindByID(ctx context.Context, id string) (*T, er
 
 // Create creates a new entity and returns it.
 func (r *BaseRepositoryImpl[T]) Create(ctx context.Context, entity *T) (*T, error) {
-	ctx, span := otelsvc.StartSpan(ctx, "buncrud.Create")
+	ctx, span := otelsvc.StartSpan(ctx, "Buncrud/Create")
 	defer span.End()
 
 	_, err := r.db.NewInsert().Model(entity).Returning("*").Exec(ctx)
@@ -203,7 +212,7 @@ func (r *BaseRepositoryImpl[T]) Create(ctx context.Context, entity *T) (*T, erro
 
 // CreateBulk creates multiple entities in a single query.
 func (r *BaseRepositoryImpl[T]) CreateBulk(ctx context.Context, entities []*T) ([]*T, error) {
-	ctx, span := otelsvc.StartSpan(ctx, "buncrud.CreateBulk")
+	ctx, span := otelsvc.StartSpan(ctx, "Buncrud/CreateBulk")
 	defer span.End()
 
 	if len(entities) == 0 {
@@ -219,7 +228,7 @@ func (r *BaseRepositoryImpl[T]) CreateBulk(ctx context.Context, entities []*T) (
 // Update updates an existing entity and returns it.
 // It returns ErrNotFound if the entity does not exist.
 func (r *BaseRepositoryImpl[T]) Update(ctx context.Context, entity *T) (*T, error) {
-	ctx, span := otelsvc.StartSpan(ctx, "buncrud.Update")
+	ctx, span := otelsvc.StartSpan(ctx, "Buncrud/Update")
 	defer span.End()
 
 	res, err := r.db.NewUpdate().Model(entity).WherePK().Returning("*").Exec(ctx)
@@ -242,7 +251,9 @@ func (r *BaseRepositoryImpl[T]) Update(ctx context.Context, entity *T) (*T, erro
 // Delete performs a soft delete on an entity.
 // It returns ErrNotFound if the entity does not exist.
 func (r *BaseRepositoryImpl[T]) Delete(ctx context.Context, id string) error {
-	ctx, span := otelsvc.StartSpan(ctx, "buncrud.Delete")
+	ctx, span := otelsvc.StartSpanWithAttributes(ctx, "Buncrud/Delete", map[string]any{
+		"id": id,
+	})
 	defer span.End()
 
 	var entity T
@@ -270,7 +281,9 @@ func (r *BaseRepositoryImpl[T]) Delete(ctx context.Context, id string) error {
 // HardDelete deletes an entity by ID.
 // It returns ErrNotFound if the entity does not exist.
 func (r *BaseRepositoryImpl[T]) HardDelete(ctx context.Context, id string) error {
-	ctx, span := otelsvc.StartSpan(ctx, "buncrud.HardDelete")
+	ctx, span := otelsvc.StartSpanWithAttributes(ctx, "Buncrud/HardDelete", map[string]any{
+		"id": id,
+	})
 	defer span.End()
 
 	var entity T
@@ -293,7 +306,9 @@ func (r *BaseRepositoryImpl[T]) HardDelete(ctx context.Context, id string) error
 
 // Exists checks if an entity with the given ID exists
 func (r *BaseRepositoryImpl[T]) Exists(ctx context.Context, id string) (bool, error) {
-	ctx, span := otelsvc.StartSpan(ctx, "buncrud.Exists")
+	ctx, span := otelsvc.StartSpanWithAttributes(ctx, "Buncrud/Exists", map[string]any{
+		"id": id,
+	})
 	defer span.End()
 
 	var entity T

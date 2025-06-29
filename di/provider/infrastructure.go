@@ -45,6 +45,7 @@ func ProvideInfrastructureLocalizer() localization.Localizer {
 
 func ProvideInfrastructureBun(cfg *config.MainConfig) *bun.DB {
 	var db *bun.DB
+	var dbName string = "db"
 
 	switch cfg.Rdbms.App.Driver {
 	case "postgres":
@@ -52,7 +53,7 @@ func ProvideInfrastructureBun(cfg *config.MainConfig) *bun.DB {
 		if err != nil {
 			panic(err)
 		}
-		config.DefaultQueryExecMode = pgx.QueryExecModeSimpleProtocol
+		dbName = config.Database
 
 		sqldb := stdlib.OpenDB(*config)
 		db = bun.NewDB(sqldb, pgdialect.New())
@@ -61,7 +62,7 @@ func ProvideInfrastructureBun(cfg *config.MainConfig) *bun.DB {
 	}
 
 	if cfg.Otel.Enabled {
-		db.AddQueryHook(bunotel.NewQueryHook(bunotel.WithDBName("db")))
+		db.AddQueryHook(bunotel.NewQueryHook(bunotel.WithDBName(dbName)))
 	}
 
 	// enable sql logging

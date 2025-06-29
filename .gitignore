@@ -1,2 +1,3 @@
 config.local.yaml
 .DS_Store
+__debug*

@@ -19,9 +19,11 @@ func InitializeApplication(appContext registry.ApplicationContext) (*registry.Ap
 		provider.TransportSet,
 		provider.RepositorySet,
 		provider.UseCaseSet,
+		provider.EventSet,
 		provider.DataloaderGraphQLSet,
 		provider.MiddlewareGraphQLSet,
 		provider.ServiceSet,
+		provider.WatermillSet,
 		registry.NewApplication,
 	)
 	return nil, nil, nil

@@ -10,9 +10,10 @@ import (
 )
 
 type Application struct {
-	TransportREST    IApplicationTransportREST
-	TransportGraphQL IApplicationTransportGraphQL
-	Initialize       InitializerFunc
+	TransportREST      IApplicationTransportREST
+	TransportGraphQL   IApplicationTransportGraphQL
+	TransportWatermill IApplicationTransportWatermill
+	Initialize         InitializerFunc
 
 	terminationSignal chan os.Signal
 }
@@ -20,34 +21,43 @@ type Application struct {
 func NewApplication(
 	transportREST IApplicationTransportREST,
 	transportGraphQL IApplicationTransportGraphQL,
+	transportWatermill IApplicationTransportWatermill,
 	initializer InitializerFunc,
 ) *Application {
 	return &Application{
-		TransportREST:    transportREST,
-		TransportGraphQL: transportGraphQL,
-		Initialize:       initializer,
+		TransportREST:      transportREST,
+		TransportGraphQL:   transportGraphQL,
+		TransportWatermill: transportWatermill,
+		Initialize:         initializer,
 	}
 }
 
-func (a *Application) RunTransportREST() {
+func (a *Application) RunTransportREST(ctx context.Context) {
 	// Run REST server in a goroutine to prevent blocking
 	go func() {
 		log.Info().Msg("starting REST server")
-		err := a.TransportREST.Run()
+		err := a.TransportREST.Run(ctx)
 		if err != nil {
 			log.Fatal().Err(err).Msg("Failed to run REST application")
 		}
 	}()
 }
 
-func (a *Application) RunTransportGraphQL() {
+func (a *Application) RunTransportGraphQL(ctx context.Context) {
 	// Run REST server in a goroutine to prevent blocking
 	go func() {
 		log.Info().Msg("starting GraphQL server")
-		err := a.TransportGraphQL.Run()
+		err := a.TransportGraphQL.Run(ctx)
 		if err != nil {
 			log.Fatal().Err(err).Msg("Failed to run GraphQL application")
 		}
+	}()
+}
+
+func (a *Application) RunWatermill(ctx context.Context) {
+	go func() {
+		log.Info().Msg("starting Watermill")
+		a.TransportWatermill.Run(ctx)
 	}()
 }
 
@@ -57,8 +67,9 @@ func (a *Application) Run(cleanup CleanupFunc) {
 
 	a.Initialize()
 
-	a.RunTransportREST()
-	a.RunTransportGraphQL()
+	a.RunTransportREST(ctx)
+	a.RunTransportGraphQL(ctx)
+	a.RunWatermill(ctx)
 
 	<-ctx.Done()
 

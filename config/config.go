@@ -7,6 +7,7 @@ type MainConfig struct {
 	DBMigration DBMigrationConfig `fig:"dbmigrate"`
 	Rdbms       RdbmsConfig       `fig:"rdbms"`
 	Otel        OtelConfig        `fig:"otel"`
+	Watermill   WatermillConfig   `fig:"watermill"`
 }
 
 type (
@@ -69,5 +70,13 @@ type (
 		ZipkinEndpoint     string  `fig:"zipkinEndpoint"`
 		OtlpMetricEndpoint string  `fig:"otlpMetricEndpoint"`
 		MetricIntervalMs   int     `fig:"metricIntervalMs"`
+	}
+
+	WatermillConfig struct {
+		Outbox WatermillOutboxConfig `fig:"outbox"`
+	}
+	WatermillOutboxConfig struct {
+		TableNames      []string          `fig:"tableNames"`
+		TopicToTableMap map[string]string `fig:"topicToTableMap"`
 	}
 )
